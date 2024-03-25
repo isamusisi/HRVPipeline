@@ -1,4 +1,4 @@
-from src.neurokit_imp.pipeline_neurokit import NeurokitPipeline
+
 from src.neurokit_imp.pipelinestage_neurokit_hrv import NeurokitPipelineStageHRV
 from src.neurokit_imp.pipelinestage_neurokit_input import NeurokitPipelineStageInput
 from src.neurokit_imp.pipelinestage_neurokit_output import NeurokitPipelineStageOutput

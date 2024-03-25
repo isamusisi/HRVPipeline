@@ -1,0 +1,196 @@
+<mxfile host="Electron" modified="2024-03-25T00:55:17.897Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.1.0 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="1MGn3rRkBOWNFYXk5XAE" version="24.1.0" type="device">
+  <diagram name="Seite-1" id="NvMbtAQP3LLSX39gMKkj">
+    <mxGraphModel dx="2360" dy="4145" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-34" value="Neurokit Pipeline" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;verticalAlign=top;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="660" y="720" width="1440" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="-8_PtPF5B7xSekpqXf4s-1" value="PipelineStage &amp;lt;ABC&amp;gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1240" y="460" width="280" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="-8_PtPF5B7xSekpqXf4s-2" value="- config: Dict&lt;div&gt;+ stage_type: PipelineStageType&lt;/div&gt;&lt;div&gt;+ accepted_in: PipelineStageType[]&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="-8_PtPF5B7xSekpqXf4s-1" vertex="1">
+          <mxGeometry y="26" width="280" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="-8_PtPF5B7xSekpqXf4s-3" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="-8_PtPF5B7xSekpqXf4s-1" vertex="1">
+          <mxGeometry y="90" width="280" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="-8_PtPF5B7xSekpqXf4s-4" value="+ accept_as_input(stage: PipelineStage): bool&lt;div&gt;+ run(pipeline_input): pipeline_output&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="-8_PtPF5B7xSekpqXf4s-1" vertex="1">
+          <mxGeometry y="98" width="280" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="-8_PtPF5B7xSekpqXf4s-5" value="Pipeline Factory" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="400" y="40" width="320" height="86" as="geometry" />
+        </mxCell>
+        <mxCell id="-8_PtPF5B7xSekpqXf4s-6" value="&amp;nbsp;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="-8_PtPF5B7xSekpqXf4s-5" vertex="1">
+          <mxGeometry y="26" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="-8_PtPF5B7xSekpqXf4s-7" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="-8_PtPF5B7xSekpqXf4s-5" vertex="1">
+          <mxGeometry y="52" width="320" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="-8_PtPF5B7xSekpqXf4s-8" value="+ create_neurokit_pipeline(): Pipeline" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="-8_PtPF5B7xSekpqXf4s-5" vertex="1">
+          <mxGeometry y="60" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="-8_PtPF5B7xSekpqXf4s-9" value="Pipeline" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="760" y="278" width="280" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="-8_PtPF5B7xSekpqXf4s-10" value="+ stages: Stage[]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="-8_PtPF5B7xSekpqXf4s-9" vertex="1">
+          <mxGeometry y="26" width="280" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="-8_PtPF5B7xSekpqXf4s-11" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="-8_PtPF5B7xSekpqXf4s-9" vertex="1">
+          <mxGeometry y="52" width="280" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="-8_PtPF5B7xSekpqXf4s-12" value="+ run( pipeline_input):pipeline_output&lt;div&gt;+ add_stage(pipeline_stage: PipelineStage)&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="-8_PtPF5B7xSekpqXf4s-9" vertex="1">
+          <mxGeometry y="60" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-1" value="DuoPipelineComperator" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="280" width="280" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-2" value="+ pipelineA: Pipeline&lt;div&gt;+ pipelineB&lt;span style=&quot;background-color: initial;&quot;&gt;: Pipeline&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;+ comperator_func: CompareFunction&lt;/span&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="HmK-YxYoy3cJAXOdfyjB-1">
+          <mxGeometry y="26" width="280" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-3" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="HmK-YxYoy3cJAXOdfyjB-1">
+          <mxGeometry y="90" width="280" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-4" value="+ compare(pipeline_inputs): Diffs" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="HmK-YxYoy3cJAXOdfyjB-1">
+          <mxGeometry y="98" width="280" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-5" value="CompareFunction" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="280" width="280" height="124" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-6" value="+ pipelineA: Pipeline&lt;div&gt;+ pipelineB&lt;span style=&quot;background-color: initial;&quot;&gt;: Pipeline&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;+ comperator_func: CompareFunction&lt;/span&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="HmK-YxYoy3cJAXOdfyjB-5">
+          <mxGeometry y="26" width="280" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-7" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="HmK-YxYoy3cJAXOdfyjB-5">
+          <mxGeometry y="90" width="280" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-8" value="+ call(pipeline_result_a,pipeline_result_b):Diff" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="HmK-YxYoy3cJAXOdfyjB-5">
+          <mxGeometry y="98" width="280" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-10" value="1" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=bottom;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1.001;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="-8_PtPF5B7xSekpqXf4s-12" target="-8_PtPF5B7xSekpqXf4s-2">
+          <mxGeometry x="-1" y="3" relative="1" as="geometry">
+            <mxPoint x="860" y="380" as="sourcePoint" />
+            <mxPoint x="971.24" y="497.34" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-14" value="" style="endArrow=open;endFill=1;endSize=12;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="-8_PtPF5B7xSekpqXf4s-8" target="-8_PtPF5B7xSekpqXf4s-9">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="570" y="230" as="sourcePoint" />
+            <mxPoint x="730" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-16" value="" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=0;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=bottom;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="HmK-YxYoy3cJAXOdfyjB-2" target="-8_PtPF5B7xSekpqXf4s-9">
+          <mxGeometry x="-1" y="3" relative="1" as="geometry">
+            <mxPoint x="550" y="190" as="sourcePoint" />
+            <mxPoint x="710" y="190" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-17" value="" style="endArrow=diamondThin;endFill=0;endSize=24;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="HmK-YxYoy3cJAXOdfyjB-6" target="HmK-YxYoy3cJAXOdfyjB-2">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="330" y="210" as="sourcePoint" />
+            <mxPoint x="490" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-18" value="NeurokitPipelineStageInput" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="780" width="280" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-19" value="- config: Dict&lt;div&gt;+ stage_type: PipelineStageType&lt;/div&gt;&lt;div&gt;+ accepted_in: PipelineStageType[]&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="HmK-YxYoy3cJAXOdfyjB-18">
+          <mxGeometry y="26" width="280" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-20" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="HmK-YxYoy3cJAXOdfyjB-18">
+          <mxGeometry y="90" width="280" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-21" value="+ accept_as_input(stage: PipelineStage): bool&lt;div&gt;+ run(pipeline_input): pipeline_output&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="HmK-YxYoy3cJAXOdfyjB-18">
+          <mxGeometry y="98" width="280" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-22" value="NeurokitPipelineStageOutput" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1780" y="780" width="280" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-23" value="- config: Dict&lt;div&gt;+ stage_type: PipelineStageType&lt;/div&gt;&lt;div&gt;+ accepted_in: PipelineStageType[]&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="HmK-YxYoy3cJAXOdfyjB-22">
+          <mxGeometry y="26" width="280" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-24" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="HmK-YxYoy3cJAXOdfyjB-22">
+          <mxGeometry y="90" width="280" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-25" value="+ accept_as_input(stage: PipelineStage): bool&lt;div&gt;+ run(pipeline_input): pipeline_output&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="HmK-YxYoy3cJAXOdfyjB-22">
+          <mxGeometry y="98" width="280" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-26" value="NeurokitPipelineStagePreprocessing" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="780" width="280" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-27" value="- config: Dict&lt;div&gt;+ stage_type: PipelineStageType&lt;/div&gt;&lt;div&gt;+ accepted_in: PipelineStageType[]&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="HmK-YxYoy3cJAXOdfyjB-26">
+          <mxGeometry y="26" width="280" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-28" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="HmK-YxYoy3cJAXOdfyjB-26">
+          <mxGeometry y="90" width="280" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-29" value="+ accept_as_input(stage: PipelineStage): bool&lt;div&gt;+ run(pipeline_input): pipeline_output&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="HmK-YxYoy3cJAXOdfyjB-26">
+          <mxGeometry y="98" width="280" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-30" value="NeurokitPipelineStageHRV" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="780" width="280" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-31" value="- config: Dict&lt;div&gt;+ stage_type: PipelineStageType&lt;/div&gt;&lt;div&gt;+ accepted_in: PipelineStageType[]&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="HmK-YxYoy3cJAXOdfyjB-30">
+          <mxGeometry y="26" width="280" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-32" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="HmK-YxYoy3cJAXOdfyjB-30">
+          <mxGeometry y="90" width="280" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-33" value="+ accept_as_input(stage: PipelineStage): bool&lt;div&gt;+ run(pipeline_input): pipeline_output&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="HmK-YxYoy3cJAXOdfyjB-30">
+          <mxGeometry y="98" width="280" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-36" value="" style="endArrow=block;dashed=1;endFill=0;endSize=12;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="HmK-YxYoy3cJAXOdfyjB-26">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="1210" y="630" as="sourcePoint" />
+            <mxPoint x="1370" y="630" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-37" value="" style="endArrow=block;dashed=1;endFill=0;endSize=12;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="HmK-YxYoy3cJAXOdfyjB-30">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="1210" y="790" as="sourcePoint" />
+            <mxPoint x="1370" y="630" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-38" value="" style="endArrow=block;dashed=1;endFill=0;endSize=12;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="HmK-YxYoy3cJAXOdfyjB-22">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="1570" y="790" as="sourcePoint" />
+            <mxPoint x="1370" y="630" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-39" value="" style="endArrow=block;dashed=1;endFill=0;endSize=12;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="HmK-YxYoy3cJAXOdfyjB-18">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="1210" y="790" as="sourcePoint" />
+            <mxPoint x="1370" y="630" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-40" value="Should the stage implement the interface or inherit it (better implement)" style="shape=note;size=20;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1040" width="440" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-41" value="Should there be subtypes for the different stages&lt;br&gt;(what would be special about them?)" style="shape=note;size=20;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1200" width="440" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-42" value="Should the stage be more granular or rather more configurable" style="shape=note;size=20;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1360" width="440" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-43" value="What about graph like pipelines rather like sequential ones." style="shape=note;size=20;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1520" width="440" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-44" value="What would be good compare_func and diff interface looklike" style="shape=note;size=20;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="1200" width="440" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-45" value="What about dataset loaders?" style="shape=note;size=20;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="1360" width="440" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-46" value="Pipelinefactory ? (abstrasct factory/factory method*/ builder pattern)" style="shape=note;size=20;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="1520" width="440" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-47" value="Interface between stages and input and output especially" style="shape=note;size=20;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="1040" width="440" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="HmK-YxYoy3cJAXOdfyjB-48" value="Next Steps:&lt;br&gt;- datasets&lt;div&gt;- compare metrics&lt;/div&gt;&lt;div&gt;- visualisation&lt;/div&gt;&lt;div&gt;- schemas/validation&lt;/div&gt;" style="strokeWidth=1;shadow=0;dashed=0;align=center;html=1;shape=mxgraph.mockup.text.stickyNote2;fontColor=#666666;mainText=;fontSize=17;whiteSpace=wrap;fillColor=#ffffcc;strokeColor=#F62E00;" vertex="1" parent="1">
+          <mxGeometry x="200" y="820" width="200" height="200" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
