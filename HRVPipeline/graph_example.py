@@ -32,22 +32,22 @@ if __name__ == "__main__":
 
     # restrict to first 60 seconds and fill in missing units
     amp = amp.sel(time=amp.time[40:160])
-    amp = amp.pint.dequantify().pint.quantify("V")
-    geo3d = element.geo3d
-
-    dists = xrutils.norm(geo3d.loc[amp.source] - geo3d.loc[amp.detector], dim="pos")
-
-    dpf = xr.DataArray([6., 6.], dims="wavelength", coords={"wavelength": [760., 850.]})
-
-    E = cedalion.nirs.get_extinction_coefficients("prahl", amp.wavelength)
-    Einv = cedalion.xrutils.pinv(E)
-
-    optical_density = -np.log(amp / amp.mean("time"))
-
-    conc = Einv @ (optical_density / (dists * dpf))
-
-    channels = ['S1D1', 'S1D2', 'S2D1', 'S2D3', 'S3D2', 'S3D3', 'S3D4', 'S4D2', 'S4D4', 'S4D5', 'S5D3', 'S5D4', 'S5D6',
-                'S6D4', 'S6D5', 'S6D6', 'S7D5', 'S7D7', 'S8D6', 'S8D7']
+    # amp = amp.pint.dequantify().pint.quantify("V")
+    # geo3d = element.geo3d
+    #
+    # dists = xrutils.norm(geo3d.loc[amp.source] - geo3d.loc[amp.detector], dim="pos")
+    #
+    # dpf = xr.DataArray([6., 6.], dims="wavelength", coords={"wavelength": [760., 850.]})
+    #
+    # E = cedalion.nirs.get_extinction_coefficients("prahl", amp.wavelength)
+    # Einv = cedalion.xrutils.pinv(E)
+    #
+    # optical_density = -np.log(amp / amp.mean("time"))
+    #
+    # conc = Einv @ (optical_density / (dists * dpf))
+    #
+    # channels = ['S1D1', 'S1D2', 'S2D1', 'S2D3', 'S3D2', 'S3D3', 'S3D4', 'S4D2', 'S4D4', 'S4D5', 'S5D3', 'S5D4', 'S5D6',
+    #             'S6D4', 'S6D5', 'S6D6', 'S7D5', 'S7D7', 'S8D6', 'S8D7']
     # num_channels = len(channels)
     # num_rows = (num_channels + 1) // 2  # Round up if there's an odd number of channels
     # num_cols = 2
@@ -61,6 +61,7 @@ if __name__ == "__main__":
     for i, fc in enumerate(amp2d.flat_channel.values):
         channel_data = amp2d.sel(flat_channel=fc)
 
+        print('channel_data', i, fc, channel_data)
     # for i, channel in enumerate(channels):
     #     # ind = i // 2
     #     # ax = axs[ind][0 if i % 2 == 0 else 1]
@@ -71,10 +72,10 @@ if __name__ == "__main__":
         peaks = get_snirf_ppg_peaks(data, sr)
 
         peak_indices = np.array(peaks.peaks)
-        peak_times = conc.time.values * peak_indices
+        peak_times = amp2d.time.values * peak_indices
         peak_times_all.extend(peak_times)
         # Plot the normalized signal
-        line, = ax.plot(conc.time, normalize(data), label=channel)
+        line, = ax.plot(amp2d.time, normalize(data), label=channel)
 
         line_color = line.get_color()
 

@@ -2,6 +2,8 @@ import numpy as np
 import scipy.signal as signal
 import networkx as nx
 import cedalion.io
+from sklearn.cluster import KMeans
+
 from HRVPipeline.src.hrv_methods import get_snirf_ppg_peaks
 import matplotlib.pyplot as plt
 import xarray as xr
@@ -144,7 +146,7 @@ def resample_xarray(xarray, new_sr):
 def main():
     path = r"src\data\NIRxData_compact\2024-04-09_001\2024-04-09_001.snirf"
     amp2d, sampling_rate = load_snirf_data(path)
-    target_sr = 500
+    target_sr = 25
     amp2d_resampled = resample_xarray(amp2d, target_sr)
     sampling_rate = target_sr
     # amp2d_resampled = amp2d
@@ -154,6 +156,8 @@ def main():
     times = amp2d_resampled.time.values * 1000
     features_list = []
     peaks_dict = {}
+    peaks_indices_all = []
+    peaks_indices_dict = {}
     fig, ax = plt.subplots(1, 1, figsize=(24, 8))
 
     for i, filtered_data in enumerate(filtered_data_list):
@@ -167,7 +171,10 @@ def main():
         peak_times = [(pt, i) for pt in peak_times if pt > 0]
         # print('Extracted peaks:', peak_times)
         peaks_dict[i] = peak_times_raw
-        features_list.extend(peak_times)
+        peaks_indices_dict[i] = peak_indices
+        peaks_indices_all.append(peak_indices)
+
+        features_list.extend(peak_times_raw)
         line_color = line.get_color()
 
         shift = 0.01
@@ -176,56 +183,50 @@ def main():
             if peak[0] > 0:
                 ax.scatter(x=peak[0], y=i * shift, color=line_color, edgecolor='black', s=100, zorder=5)
 
+    peak_sums = np.stack(peaks_indices_all).sum(axis=0)
+    # ax.plot(times, peak_sums)
+
+    num_bin = np.stack(peaks_indices_all).sum(axis=1).max()
+
+    # num_bin = np.max(num_bin)
+
+    bins = np.histogram(peak_sums, bins=num_bin)
+    bin_edges = bins[1]
+    bin_counts = bins[0]
+    print('Bins:', bin_edges)
+    print('Bin counts:', bin_counts)
+    print('num_bin:', num_bin)
+
+    features_list = np.asarray(features_list)
+
+    print('features_list:', features_list.min(), features_list.max(), features_list.shape)
+    peak_sums_reshaped: np.array = features_list.reshape(-1, 1)
+    # peak_sums_reshaped = features_list
+    n_clusters = num_bin  # Adjust the number of clusters as needed
+    kmeans = KMeans(n_clusters=n_clusters, random_state=0).fit(peak_sums_reshaped)
+    clusters = kmeans.labels_
+    aggregated_peaks = []
+    # Plot the clusters
+    for cluster in range(n_clusters):
+        cluster_indices = np.where(clusters == cluster)[0]
+        agg_mean = peak_sums_reshaped[cluster_indices].mean()
+        aggregated_peaks.append(agg_mean)
+        ax.axvline(x=agg_mean, color='black', linestyle='--', linewidth=1)
+        # ax.scatter(peak_sums_reshaped[cluster_indices], times[cluster_indices], label=f'Cluster {cluster}', s=50)
+
+    aggregated_peaks.sort()
+    estimated_ibis = np.diff(aggregated_peaks)
+
+    print("Estimated IBIs:", np.mean(estimated_ibis), np.std(estimated_ibis), estimated_ibis)
+
     ax.legend()
     ax.set_xlabel("Time (ms)")
     ax.set_ylabel("$\Delta c$ / $\mu M$")
 
     features_list.sort()
 
-    avg_hrs = calculate_average_hr(features_list, peaks_dict)
-
-    dag_features_list = construct_dag(features_list, avg_hrs)
-    nodes = list(dag_features_list.nodes)
-    shortest_path_features = nx.shortest_path(dag_features_list, source=nodes[0], target=nodes[-1])
-    estimated_ibis = []
-
-    shortest_path_times = list(shortest_path_features)
-
-    for time in shortest_path_times:
-        if time > 0:
-            ax.axvline(x=time, color='black', linestyle='--', linewidth=1)
-    shortest_path_times.sort()
-
-    for i, time in enumerate(shortest_path_times):
-        if i > 0:
-            estimated_ibis.append(time - shortest_path_times[i - 1])
-
-    print("Estimated IBIs:", np.mean(estimated_ibis), np.std(estimated_ibis), estimated_ibis)
-
     plt.show()
 
 
 if __name__ == "__main__":
     main()
-
-#  I now have a complete implementation of the graph algorithm through all steps.
-#
-# 1.) Preprocess the PPG Signal
-#
-# In this step i first apply a filter on the signal for each channel
-#
-# import heartpy as hp
-#
-# hp.filter_signal(channel, [0.5, 3], sample_rate=sr, order=2, filtertype='bandpass')
-#
-#
-# and than i resample it to a higher sampling rate. In this case fron 20Hz to 500Hz since that is the sampling rate of the reference PPG/ECG signal.
-#
-# import scipy.signal as signal
-#
-# target_sr = 500
-#
-# duration = data.time.values[-1] - data.time.values[0]
-# new_length = int(duration * new_sr)
-#
-# resampled_data = signal.resample(data.values, new_length)

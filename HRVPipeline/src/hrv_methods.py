@@ -45,7 +45,7 @@ def get_sampling_rate(times):
     return round(sr, 2)
 
 
-def resample_ppg(ppg):
+def resample_ppg(ppg, target_sr=25):
     # sr = calc_sampling_rate(ppg)
     sr = get_sampling_rate_from_timestamps(ppg)
     # sr = 9
@@ -54,9 +54,9 @@ def resample_ppg(ppg):
     for i, c in enumerate(ppg.columns):
         # resampled.insert()
         # print(f"---------resample_ppg column--------{c} {i}")
-        resampled.insert(i, c, nk.signal_resample(ppg[c], sampling_rate=int(sr), desired_sampling_rate=25))
+        resampled.insert(i, c, nk.signal_resample(ppg[c], sampling_rate=int(sr), desired_sampling_rate=target_sr))
     sr = get_sampling_rate_from_timestamps(ppg)
-    resampled_ppg = nk.signal_resample(ppg["green"], sampling_rate=int(sr), desired_sampling_rate=25)
+    resampled_ppg = nk.signal_resample(ppg["green"], sampling_rate=int(sr), desired_sampling_rate=target_sr)
     # resampled = nk.signal_resample(ppg, sampling_rate=int(sr), desired_sampling_rate=25)
     # print(f"---------resample_ppg---------{sr}-{resampled[0]}-")
     # return pd.DataFrame(resampled, columns=["green"])

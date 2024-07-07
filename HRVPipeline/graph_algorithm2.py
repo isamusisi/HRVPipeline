@@ -4,6 +4,9 @@ import networkx as nx
 import cedalion.io
 from HRVPipeline.src.hrv_methods import get_snirf_ppg_peaks
 import matplotlib.pyplot as p
+import xarray as xr
+import heartpy as hp
+import neurokit2 as nk
 
 # Parameters
 cutoff_freqs = (0.5, 15)
@@ -17,6 +20,12 @@ def bandpass_filter(data, cutoff_freqs, fs):
     b, a = signal.butter(2, [low, high], btype='band')
     return signal.filtfilt(b, a, data)
 
+
+def filter_signal(data, sr):
+    return hp.filter_signal(data, [0.5, 3],
+                     sample_rate=sr,
+                     order=2,
+                     filtertype='bandpass')
 
 # Feature extraction: systolic peaks, maximum slopes, and onset points
 def extract_features(ppg):
@@ -56,12 +65,14 @@ def construct_dag(features, avg_ibis):
     fs = list(reversed(features))
     ibis = list(reversed(avg_ibis))
     for i, v_i in enumerate(fs):
+        v_i = v_i[0]
         avg_ibi = ibis[i]
         for j, v_j in enumerate(fs[i + 1:]):
+            v_j = v_j[0]
             dis = abs(v_i - v_j)
             # print('++++++++++++++++++++++++++++construct_dag params', v_i, v_j, dis, avg_ibi, 1.5*avg_ibi)
             if dis < 1.5 * avg_ibi:
-                w = np.pi * dis ** 2
+                w = np.pi * dis ** 5
                 G.add_edge(v_i, v_j, weight=w)
     return G
 
@@ -138,7 +149,7 @@ def greedy_fusion(features_list, avg_ibis):
 def load_snirf_data(path):
     elements = cedalion.io.read_snirf(path)
     amp3d = elements[0].data[0]
-    amp3d = amp3d.sel(time=amp3d.time[40:160])
+    amp3d = amp3d.sel(time=amp3d.time[40:360])
     amp2d = amp3d.stack(flat_channel=["channel", "wavelength"])
     return amp2d, amp2d.cd.sampling_rate
 
@@ -147,24 +158,32 @@ def load_snirf_data(path):
 def preprocess_snirf_data(amp2d, sampling_rate):
     filtered_data_list = []
     channel_name_list = []
-    for fc in amp2d.flat_channel.values:
+    for i, fc in enumerate(amp2d.flat_channel.values):
+        # if i == 28:
+        #     continue
         channel_data = amp2d.sel(flat_channel=fc).values
         # filtered_data = bandpass_filter(channel_data, cutoff_freqs, sampling_rate)
+        # filtered_data = filter_signal(channel_data, sampling_rate)
         filtered_data = channel_data
         filtered_data_list.append(filtered_data)
         channel_name_list.append(fc)
     return filtered_data_list, channel_name_list
 
 
-def calculate_average_hr(peak_timestamps):
+def calculate_average_hr(peak_timestamps, peaks_dict):
     # Initialize variables
-    window_length = 8 * 1000 # Length of the window in seconds
+    window_length = 8 * 1000  # Length of the window in seconds
     hr_estimates = []
 
     # Iterate through each peak timestamp
-    first = peak_timestamps[0]
-    last = peak_timestamps[-1]
-    for timestamp in peak_timestamps:
+    # first = peak_timestamps[0]
+    # last = peak_timestamps[-1]
+    for item in peak_timestamps:
+        timestamp = item[0]
+        channel = item[1]
+        peak_list = peaks_dict[channel]
+        first = peak_list[0]
+        last = peak_list[-1]
         # Find HR estimate for the closest 8-second window around the timestamp
         if timestamp - first >= window_length and last - timestamp >= window_length:
             closest_window_start = timestamp - window_length / 2
@@ -178,15 +197,15 @@ def calculate_average_hr(peak_timestamps):
         # closest_window_start = min(timestamp, timestamp - window_length / 2)
         # closest_window_end = closest_window_start + window_length
 
-        peaks = [i for i in peak_timestamps if closest_window_start <= i <= closest_window_end]
+        peaks = [i for i in peak_list if closest_window_start <= i <= closest_window_end]
 
         # Simulated HR estimation based on the peak timestamp
         # In a real implementation, this would involve actual processing and filtering
         # Assuming a simplistic approach of extracting HR from timestamps
-        hr = (60/8 * len(peaks))
-        # print('hr---------------', timestamp, closest_window_start, closest_window_end, hr, peaks)
-        # hr_estimate = 60000 / hr
-        hr_estimate = 60000 / 74
+        hr = (60 / 8 * len(peaks))
+        print('hr---------------', timestamp, closest_window_start, closest_window_end, hr, peaks)
+        hr_estimate = 60000 / hr
+        # hr_estimate = 60000 / 74
 
         hr_estimates.append(hr_estimate)
 
@@ -201,16 +220,35 @@ def normalize(sig):
     return normalized_signal
 
 
+# Resample function
+def resample_xarray(xarray, new_fs):
+    current_fs = xarray.cd.sampling_rate
+    duration = xarray.time.values[-1] - xarray.time.values[0]
+    new_length = int(duration * new_fs)
+
+    resampled_data = signal.resample(xarray.values, new_length)
+    new_time = np.linspace(xarray.time.values[0], xarray.time.values[-1], new_length)
+
+    return xr.DataArray(resampled_data, dims=xarray.dims, coords={'time': new_time})
+    # return xarray
+
+
 # Main processing
 def main():
     path = r"src\data\NIRxData_compact\2024-04-09_001\2024-04-09_001.snirf"
     amp2d, sampling_rate = load_snirf_data(path)
-    filtered_data_list, channels = preprocess_snirf_data(amp2d, sampling_rate)
+    # amp2d_resampled = amp2d.copy()
+    # target_sr = 500
+    # amp2d_resampled = resample_xarray(amp2d, target_sr)
+    amp2d_resampled = amp2d
+    # sampling_rate = target_sr
 
-    times = amp2d.time.values * 1000
+    filtered_data_list, channels = preprocess_snirf_data(amp2d_resampled, sampling_rate)
+
+    times = amp2d_resampled.time.values * 1000
     # Extracting features from all channels
     features_list = []
-    peaks_list = []
+    peaks_dict = {}
     # slopes_list = []
     # onsets_list = []
     f, ax = p.subplots(1, 1, figsize=(24, 8))
@@ -221,9 +259,10 @@ def main():
         line, = ax.plot(times, normalize(filtered_data), label=channels[i])
         peak_indices = np.array(peaks.peaks.values)
         peak_times = times * peak_indices
-        peak_times = [i for i in peak_times if i > 0]
+        peak_times_raw = [pt for pt in peak_times if pt > 0]
+        peak_times = [(pt, i) for pt in peak_times if pt > 0]
         print('-------------------------extract_features peaks', peak_times)
-        peaks_list.append(peak_times)
+        peaks_dict[i] = peak_times_raw
         features_list.extend(peak_times)
         # features_list.append(slopes)
         # features_list.append(onsets)
@@ -234,29 +273,30 @@ def main():
         shift = 0.01
 
         for peak in peak_times:
-            if peak > 0:
+            if peak[0] > 0:
                 # ax.axvline(x=peak, color=line_color, linestyle='--', linewidth=1)
-                ax.scatter(x=peak, y=i * shift, color=line_color, edgecolor='black', s=100, zorder=5)
+                ax.scatter(x=peak[0], y=i * shift, color=line_color, edgecolor='black', s=100, zorder=5)
 
         ax.legend()
-        ax.set_xlabel("time / s")
+        ax.set_xlabel("time / ms")
         ax.set_ylabel("$\Delta c$ / $\mu M$")
 
-    features_list = list(set(features_list))
+    # features_list = list(set(features_list))
     features_list.sort()
 
     # Estimating average heart rate and IBI
-    hr_avg_list = [60000 / np.mean(np.diff(peaks)) for peaks in peaks_list if len(peaks) > 1]
-    avg_ibis = np.mean(hr_avg_list) if hr_avg_list else 1000  # Default to 1000ms if hr_avg_list is empty
+    # hr_avg_list = [60000 / np.mean(np.diff(peaks)) for peaks in peaks_list if len(peaks) > 1]
+    # avg_ibis = np.mean(hr_avg_list) if hr_avg_list else 1000  # Default to 1000ms if hr_avg_list is empty
 
-    print('-------------------------feature params', avg_ibis, len(features_list), features_list)
+    print('-------------------------peak dict params', peaks_dict)
+    print('-------------------------feature params', 'avg_ibis', len(features_list), features_list)
     # Constructing DAG for each feature set from each channel
     # dag_peaks_list = [construct_dag(peaks, avg_ibis) for peaks in peaks_list]
     # dag_slopes_list = [construct_dag(slopes, avg_ibis) for slopes in slopes_list]
     # dag_onsets_list = [construct_dag(onsets, avg_ibis) for onsets in onsets_list]
-    avg_hrs = calculate_average_hr(features_list)
+    avg_hrs = calculate_average_hr(features_list, peaks_dict)
 
-    print('-------------------------avg_hrs', len(avg_hrs), avg_hrs, avg_ibis)
+    print('-------------------------avg_hrs', len(avg_hrs), avg_hrs, 'avg_ibis')
     dag_features_list = construct_dag(features_list, avg_hrs)
     nodes = list(dag_features_list.nodes)
     print('-------------------------dag_features_list params', dag_features_list.nodes)
@@ -270,11 +310,19 @@ def main():
     # shortest_path_onsets = [nx.shortest_path(dag, weight='weight') for dag in dag_onsets_list]
     # shortest_path_features = nx.shortest_path(dag_features_list, weight='weight')
     shortest_path_features = nx.shortest_path(dag_features_list, source=nodes[0], target=nodes[-1])
+    shortest_path_features2 = nx.shortest_path(dag_features_list)
     # shortest_path_peaks = nx.shortest_path(dag_peaks_list, weight='weight')
     # shortest_path_slopes = nx.shortest_path(dag_slopes_list, weight='weight')
     # shortest_path_onsets = nx.shortest_path(dag_onsets_list, weight='weight')
 
-    # print('-------------------------shortest_path_features params', list(reversed(shortest_path_features.keys())))
+    # cols = ['green', 'red', 'blue', 'yellow']
+    # for i, key in enumerate(list(shortest_path_features2.keys())[:4]):
+    #     path = shortest_path_features2[key].keys()
+    #     print('-------------------------shortest_path_features2 params', path)
+    #     for time in path:
+    #         if time > 0:
+    #             ax.axvline(x=time, color=cols[i], linestyle='--', linewidth=1)
+    #             # ax.scatter(x=peak, y=i * shift, color=line_color, edgecolor='black', s=100, zorder=5)
     print('-------------------------shortest_path_features params', shortest_path_features)
     # Apply greedy fusion method to combine IBI sequences
     # estimated_ibis = greedy_fusion(shortest_path_peaks, shortest_path_slopes, shortest_path_onsets, avg_ibis)
