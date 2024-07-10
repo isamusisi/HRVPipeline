@@ -25,12 +25,12 @@ class NeurokitPipelineStagePreprocessing(PipelineStage):
 
         window_samples = window * sr
 
-        # short_input = pipeline_input.rolling(time=window_samples).construct('window', stride=window_samples)[1]
+        # short_input = pipeline_imp.rolling(time=window_samples).construct('window', stride=window_samples)[1]
         short_input = pipeline_input[::20]
 
         resampled_input = nk.signal_resample(short_input, sampling_rate=int(sr/20), desired_sampling_rate=sr)
 
-        # sr = hm.get_sampling_rate(pipeline_input)
+        # sr = hm.get_sampling_rate(pipeline_imp)
         print(f"...................short_input: {short_input}")
         print(f"...................Sampling rate: {sr}")
         print(f"...................pipeline_input: {pipeline_input}")
@@ -40,12 +40,12 @@ class NeurokitPipelineStagePreprocessing(PipelineStage):
         filtered_short = short_input.cd.freq_filter(fmin=0.5, fmax=3, butter_order=2)
         # p.plot_signal([short_input], title='raw ppg')
         filtered_input = pipeline_input.cd.freq_filter(fmin=0.5, fmax=3, butter_order=2)
-        # filtered_input = pipeline_input.apply(lambda x: nk.signal_filter(x, sampling_rate=sr, lowcut=0.5, highcut=3,
+        # filtered_input = pipeline_imp.apply(lambda x: nk.signal_filter(x, sampling_rate=sr, lowcut=0.5, highcut=3,
         #                                                                  order=2))
 
         f_noise = noise.cd.freq_filter(fmin=0.5, fmax=3, butter_order=2)
         print(f"...................noised filtered pipeline_input: {f_noise}")
-        # p.plot_signal([pipeline_input], title='ppg')
+        # p.plot_signal([pipeline_imp], title='ppg')
         # p.plot_signal([filtered_short], title='filtered ppg')
         # p.plot_signal([noise], title='noised ppg')
 
@@ -65,7 +65,7 @@ class NeurokitPipelineStagePreprocessing(PipelineStage):
         #               title=f'filtered ppg peaks - {peaks_raw.peaks.values.sum()}')
         p.plot_signal([resampled_input],
                       title=f'resampled_ppg')
-        # p.plot_signal([resampled_input, pipeline_input],
+        # p.plot_signal([resampled_input, pipeline_imp],
         #               title=f'resampled_ppg - raw_ppg')
         result = peaks.peaks.rolling(time=window_samples).construct('window', stride=window_samples)
 

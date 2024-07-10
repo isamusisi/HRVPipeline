@@ -1,0 +1,2 @@
+class GraphConfig:
+    pass

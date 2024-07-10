@@ -1,0 +1,2 @@
+class AmpdConfig(object):
+    pass

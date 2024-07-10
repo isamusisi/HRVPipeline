@@ -171,3 +171,6 @@ docs/examples/*.ipynb
 docs/api/*
 
 scratch/
+
+
+/.idea/

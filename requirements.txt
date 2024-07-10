@@ -1,0 +1,10 @@
+neurokit2==0.2.7
+heartpy==1.2.7
+plotly==5.21.0
+scipy==1.10.1
+snirf==0.7.4
+requests
+matplotlib
+pint-xarray
+trimesh
+vtk==9.2.2

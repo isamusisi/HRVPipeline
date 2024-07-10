@@ -1,0 +1,2 @@
+class MultichannelConfig(object):
+    pass

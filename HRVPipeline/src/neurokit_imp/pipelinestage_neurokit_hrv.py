@@ -3,11 +3,11 @@ import numpy as np
 from HRVPipeline.src.pipeline.pipeline_stage import PipelineStage, PipelineStageType
 import matplotlib
 
+
 import neurokit2 as nk
 
-matplotlib.use('TkAgg')  # Use the 'agg' backend
+# matplotlib.use('TkAgg')  # Use the 'agg' backend
 
-matplotlib.use('TkAgg')  # Use the 'agg' backend
 
 
 class NeurokitPipelineStageHRV(PipelineStage):

@@ -140,6 +140,26 @@ def resample_xarray(xarray, new_sr):
     # return xarray
 
 
+def plot_graph(G):
+    pos = nx.spring_layout(G)
+    plt.figure(figsize=(12, 8))
+
+    # Draw nodes
+    nx.draw_networkx_nodes(G, pos, node_size=500)
+
+    # Draw edges
+    nx.draw_networkx_edges(G, pos, edgelist=G.edges, arrowstyle='->', arrowsize=20)
+
+    # Draw labels
+    nx.draw_networkx_labels(G, pos, font_size=12, font_family='sans-serif')
+
+    # Show edge weights
+    # edge_labels = nx.get_edge_attributes(G, 'weight')
+    # nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+
+    plt.title('Graph Representation of IBI')
+    plt.show()
+
 # Main processing function
 def main():
     path = r"src\data\NIRxData_compact\2024-04-09_001\2024-04-09_001.snirf"
@@ -155,11 +175,16 @@ def main():
     features_list = []
     peaks_dict = {}
     fig, ax = plt.subplots(1, 1, figsize=(24, 8))
-
+    y_values = []
+    shift = 0.01
     for i, filtered_data in enumerate(filtered_data_list):
         # print('filtered_data', i, filtered_data)
         peaks = get_snirf_ppg_peaks(filtered_data, sampling_rate)
         line, = ax.plot(times, normalize(filtered_data), label=channels[i])
+        # line, = ax.plot(times, normalize(filtered_data))
+        # line, = ax.plot([])
+        y_value = i * shift
+        y_values.append(y_value)
         peak_indices = np.array(peaks.peaks.values)
         peak_times = times * peak_indices
         # print(f'############## peak_times shape {peak_times.shape}')
@@ -170,26 +195,36 @@ def main():
         features_list.extend(peak_times)
         line_color = line.get_color()
 
-        shift = 0.01
+
 
         for peak in peak_times:
             if peak[0] > 0:
-                ax.scatter(x=peak[0], y=i * shift, color=line_color, edgecolor='black', s=100, zorder=5)
+                ax.scatter(x=peak[0], y=y_value, color=line_color, edgecolor='black', s=100, zorder=5)
 
-    ax.legend()
+    ax.legend(loc='right', bbox_to_anchor=(1.1, 0.5), ncol=1, fancybox=True)
+    plt.title('40 channels peaks and estimated real peaks (dotted line)', fontdict={'fontsize': 16})
     ax.set_xlabel("Time (ms)")
     ax.set_ylabel("$\Delta c$ / $\mu M$")
-
+    # ax.set_ylabel("Channel / Wavelength")
+    # ax.set_yticks(y_values)
+    # ax.set_yticklabels(channels)
+    # plt.show()
+    # exit(0)
     features_list.sort()
 
     avg_hrs = calculate_average_hr(features_list, peaks_dict)
 
     dag_features_list = construct_dag(features_list, avg_hrs)
+
+    # plot_graph(dag_features_list)
+
     nodes = list(dag_features_list.nodes)
     shortest_path_features = nx.shortest_path(dag_features_list, source=nodes[0], target=nodes[-1])
     estimated_ibis = []
 
     shortest_path_times = list(shortest_path_features)
+    shortest_path_times.reverse()
+    ibis = np.diff(shortest_path_times)
 
     for time in shortest_path_times:
         if time > 0:
@@ -200,7 +235,8 @@ def main():
         if i > 0:
             estimated_ibis.append(time - shortest_path_times[i - 1])
 
-    print("Estimated IBIs:", np.mean(estimated_ibis), np.std(estimated_ibis), estimated_ibis)
+    print("Estimated IBIs 1:", np.mean(estimated_ibis), np.std(estimated_ibis), estimated_ibis)
+    print("Estimated IBIs 2:", np.mean(ibis), np.std(ibis), ibis)
 
     plt.show()
 

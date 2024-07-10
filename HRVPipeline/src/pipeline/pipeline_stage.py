@@ -10,8 +10,8 @@ class PipelineStageType(Enum):
     OUTPUT = 4
 
 
-# class PipelineStage:
-#    pass
+class PipelineStageOutput:
+    pass
 
 class PipelineStage:  # TODO inherit (ABC) == abstract class so it can not be constrcut
     def __init__(self, config={}):
@@ -34,7 +34,7 @@ class PipelineStage:  # TODO inherit (ABC) == abstract class so it can not be co
             return stage.stage_type in self.accepted_in
 
     # TODO call //run / invoke =?....
-    def run(self, pipeline_input):  # TODO what about output types?!
+    def run(self, pipeline_input)->PipelineStageOutput:  # TODO what about output types?!
         """put description here"""
         # TODO add hooks? like visual on_before_stage or rather in stage ...
         # result = stage.run(result) # TODO cache result?
