@@ -10,7 +10,8 @@ class MultiChannelRawSignal(PipelineStageOutput):
 
 
 class MultiChannelProcessedSignal(MultiChannelRawSignal):
-    def __init__(self, signals, sampling_rate=0, channels=0):
+    def __init__(self, signals, sampling_rate=0, channels=0, times=None):
         super().__init__(signals, sampling_rate, channels)
+        self.times = times  # TODO not so nice
 
 
