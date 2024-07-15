@@ -3,7 +3,9 @@ from HRVPipeline.src.neurokit_imp.pipelinestage_neurokit_input import NeurokitPi
 from HRVPipeline.src.neurokit_imp.pipelinestage_neurokit_output import NeurokitPipelineStageOutput
 from HRVPipeline.src.neurokit_imp.pipelinestage_neurokit_preprocessing import NeurokitPipelineStagePreprocessing
 from HRVPipeline.src.pipeline.pipeline import Pipeline
+from HRVPipeline.src.pipeline_imp.pipeline_ampd import AmpdPipelineStage
 from HRVPipeline.src.pipeline_imp.pipeline_graph import GraphPipelineStage
+from HRVPipeline.src.pipeline_imp.pipeline_multichannel import MultiChannelPipelineStage
 
 from HRVPipeline.src.pipeline_imp.pipeline_snirf_input import *
 from HRVPipeline.src.pipeline_imp.pipeline_snirf_preprocessing import SnirfUpsamplingPipelineStage, \
@@ -63,12 +65,12 @@ class PipelineFactory:
     def create_ampd_pipeline(config):
         stages = []
         stages.extend(PipelineFactory.create_snirf_input_pipeline(config))
-
+        stages.extend([AmpdPipelineStage(config)])
         return PipelineFactory.create_pipeline_from_stages(stages)
 
     @staticmethod
     def create_multichannel_aggregation_pipeline(config):
         stages = []
         stages.extend(PipelineFactory.create_snirf_input_pipeline(config))
-
+        stages.extend([MultiChannelPipelineStage(config)])
         return PipelineFactory.create_pipeline_from_stages(stages)

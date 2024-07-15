@@ -30,5 +30,6 @@ if __name__ == "__main__":
     pipeline_graph = PipelineFactory.create_graph_pipeline(graph_config)
     pipeline_multi = PipelineFactory.create_multichannel_aggregation_pipeline(multichannel_config)
 
-    pipeline = pipeline_graph
+    #pipeline = pipeline_graph
+    pipeline = pipeline_multi
     res = pipeline.run(evaluation_config.dataset_path)

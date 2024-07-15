@@ -11,3 +11,5 @@ class IbisSignal(PipelineStageOutput):
     def __init__(self, signals, ibis):
         self.multi_channel_signals: MultiChannelProcessedSignal= signals
         self.ibis = ibis
+
+

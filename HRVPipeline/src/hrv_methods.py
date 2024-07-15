@@ -89,6 +89,8 @@ def get_ppg_peaks(ppg):
 
 
 def get_snirf_ppg_peaks(ppg, sr):
+    #print("-----------")
+    #print(ppg)
     signals, info = nk.ppg_process(ppg, sampling_rate=sr)
     hr = signals["PPG_Rate"]
     peaks = xr.DataArray(signals["PPG_Peaks"].values, dims=['time'])
