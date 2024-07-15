@@ -17,10 +17,12 @@ class GraphPipelineStage(PipelineStage):
     def run(self, pipeline_input: MultiChannelProcessedSignal) -> MultiChannelProcessedSignal:
         processed = pipeline_input
 
-        filtered_data_list = processed.signals
+        filtered_data_list = processed.signals.transpose()
         sampling_rate = processed.sampling_rate
         times = processed.times  # TODO
 
+        print('0 ++++++++++++++++++++++++++++++++++++++++++ GraphPipelineStage :', sampling_rate, np.shape(filtered_data_list), filtered_data_list[0])
+        print('1 ++++++++++++++++++++++++++++++++++++++++++ GraphPipelineStage :', np.shape(times), times[-1])
         features_list, peaks_dict = calc_features_list(filtered_data_list, sampling_rate, times)
 
         avg_hrs = calculate_average_hr(features_list, peaks_dict)
@@ -35,6 +37,7 @@ class GraphPipelineStage(PipelineStage):
 
         shortest_path_times = list(shortest_path_features)
         shortest_path_times.reverse()
+        peak_indices = np.isin(times, shortest_path_times).astype(int)
         ibis = np.diff(shortest_path_times)
 
 
@@ -48,5 +51,6 @@ class GraphPipelineStage(PipelineStage):
         print("Estimated IBIs 2:", np.mean(ibis), np.std(ibis), ibis)
 
         peaks_graph = None
-        res = IbisSignal(signals=processed, ibis=estimated_ibis)
+        # res = IbisSignal(signals=processed, ibis=estimated_ibis)
+        res = PeakSignal(signals=processed, peaks=peak_indices)
         return res

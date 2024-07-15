@@ -7,6 +7,7 @@ from HRVPipeline.src.pipeline.pipeline_stage import PipelineStage, PipelineStage
 import numpy as np
 from sklearn.cluster import KMeans
 
+
 class MultiChannelPipelineStage(PipelineStage):
     def __init__(self, config):
         super(MultiChannelPipelineStage, self).__init__(config)
@@ -26,7 +27,6 @@ class MultiChannelPipelineStage(PipelineStage):
         peaks_dict = {}
         peaks_indices_all = []
         peaks_indices_dict = {}
-
 
         for i, filtered_data in enumerate(filtered_data_list):
             # print('filtered_data', i, filtered_data)
@@ -59,10 +59,10 @@ class MultiChannelPipelineStage(PipelineStage):
             print('Bin counts:', bin_counts)
             print('num_bin:', num_bin)
 
-            features_list = np.asarray(features_list)
+            # features_list = np.asarray(features_list)
 
-            print('features_list:', features_list.min(), features_list.max(), features_list.shape)
-            peak_sums_reshaped: np.array = features_list.reshape(-1, 1)
+            # print('features_list:', features_list.min(), features_list.max(), features_list.shape)
+            peak_sums_reshaped: np.array = np.reshape(features_list, (-1, 1))
             # peak_sums_reshaped = features_list
             n_clusters = num_bin  # Adjust the number of clusters as needed
             kmeans = KMeans(n_clusters=n_clusters, random_state=0).fit(peak_sums_reshaped)
@@ -73,7 +73,7 @@ class MultiChannelPipelineStage(PipelineStage):
                 cluster_indices = np.where(clusters == cluster)[0]
                 agg_mean = peak_sums_reshaped[cluster_indices].mean()
                 aggregated_peaks.append(agg_mean)
-                #ax.axvline(x=agg_mean, color='black', linestyle='--', linewidth=1)
+                # ax.axvline(x=agg_mean, color='black', linestyle='--', linewidth=1)
                 # ax.scatter(peak_sums_reshaped[cluster_indices], times[cluster_indices], label=f'Cluster {cluster}', s=50)
 
             aggregated_peaks.sort()
@@ -82,5 +82,6 @@ class MultiChannelPipelineStage(PipelineStage):
             print("Estimated IBIs:", np.mean(estimated_ibis), np.std(estimated_ibis), estimated_ibis)
 
             shift = 0.01
-        res = IbisSignal(signals=processed, ibis=estimated_ibis)
+        # res = IbisSignal(signals=processed, ibis=estimated_ibis)
+        res = PeakSignal(signals=processed, peaks=peak_indices)
         return res

@@ -5,6 +5,30 @@ from HRVPipeline.src.data_model.peak_signal import PeakSignal, IbisSignal
 from HRVPipeline.src.hrv_methods import get_snirf_ppg_peaks
 from HRVPipeline.src.pipeline.pipeline_stage import PipelineStage, PipelineStageType
 import numpy as np
+from threading import Thread
+
+class OneChannelRunner(Thread):
+    def __init__(self,i,channel_data,times):
+        Thread.__init__(self)
+        self.i =i
+        self.channel_data = channel_data
+        self.times = times
+        self.estimated_ibis = None
+        self.peak_indicies = None
+
+    def run(self):
+        peaks = ampd(self.channel_data)
+
+        peak_times = self.times[peaks]
+
+        self.peak_indicies = np.isin(self.times, peak_times).astype(int)
+
+        # print("ampd peaks :", peak_times)
+
+        self.estimated_ibis = np.diff(peak_times)
+
+        print(f"Estimated IBIs {self.i}:", np.mean(self.estimated_ibis), np.std(self.estimated_ibis))  # , estimated_ibis)
+
 
 class AmpdPipelineStage(PipelineStage):
     def __init__(self, config):
@@ -22,22 +46,23 @@ class AmpdPipelineStage(PipelineStage):
 
         print(filtered_data_list.shape)
         filtered_data_list = filtered_data_list.transpose()
+        runs = []
+
         for i, channel_data in enumerate(filtered_data_list):
+            print("starting ",i)
             # print(f'############## channel_data shape {np.shape(channel_data)}')
             # channel_data = filtered_data_list[0]
-
-            peaks = ampd(channel_data)
-
-            peak_times = times[peaks]
-
-            # print("ampd peaks :", peak_times)
-
-            estimated_ibis = np.diff(peak_times)
-
-            print(f"Estimated IBIs {i}:", np.mean(estimated_ibis), np.std(estimated_ibis))#, estimated_ibis)
+            run = OneChannelRunner(i,channel_data[:],times[:])
+            run.start()
+            runs.append(run)
 
 
-        res = IbisSignal(signals=processed, ibis=estimated_ibis)
+        for run in runs:
+            print("finished ",run.i)
+            run.join()
+        peak_indices = runs[0].peak_indicies # TODO select proper
+        # res = IbisSignal(signals=processed, ibis=estimated_ibis)
+        res = PeakSignal(signals=processed, peaks=peak_indices)
         return res
 
 
