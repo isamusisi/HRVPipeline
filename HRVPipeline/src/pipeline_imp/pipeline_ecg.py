@@ -32,7 +32,7 @@ def resample_xarray(xarray, new_sr):
 
     resampled_data = signal.resample(xarray.values, new_length)
     new_time = np.linspace(xarray.time.values[0], xarray.time.values[-1], new_length)
-    print('resample_xarray :', xarray.coords)
+    #print('resample_xarray :', xarray.coords)
     cords = {**xarray.coords}
     cords.pop('samples', None)
     return xr.DataArray(resampled_data, dims=xarray.dims, coords={**cords, 'time': new_time})
@@ -62,8 +62,9 @@ class EcgBasePipelineStage(PipelineStage):
         peaks_dict = {}
         peaks_indices_all = []
         peaks_indices_dict = {}
-        fig, ax = plt.subplots(1, 1, figsize=(24, 8))
-        ax.plot(times, normalize(ecg), label='ECG')
+        if self.config.plot:
+            fig, ax = plt.subplots(1, 1, figsize=(24, 8))
+            ax.plot(times, normalize(ecg), label='ECG')
         # for i, filtered_data in enumerate(filtered_data_list):
         #     # print('filtered_data', i, filtered_data)
         #     peaks = get_snirf_ppg_peaks(filtered_data, sampling_rate)
@@ -87,7 +88,7 @@ class EcgBasePipelineStage(PipelineStage):
         #         if peak[0] > 0:
         #             ax.scatter(x=peak[0], y=i * shift, color=line_color, edgecolor='black', s=100, zorder=5)
 
-        print("ecg shape:", ecg.values.shape, sampling_rate)
+        #print("ecg shape:", ecg.values.shape, sampling_rate)
 
         ecg_info, r_peaks = nk.ecg_process(ecg.values, sampling_rate=sampling_rate)
         peak_indices = ecg_info['ECG_R_Peaks']
@@ -96,19 +97,21 @@ class EcgBasePipelineStage(PipelineStage):
         # print(f'############## peak_times shape {peak_times.shape}')
         peak_times = [pt for pt in peak_times if pt > 0]
 
-        for peak in peak_times:
-            ax.axvline(x=peak, color='black', linestyle='--', linewidth=1)
+        if self.config.plot:
+            for peak in peak_times:
+                ax.axvline(x=peak, color='black', linestyle='--', linewidth=1)
 
         estimated_ibis = np.diff(peak_times)
 
-        print("Estimated IBIs:", np.mean(estimated_ibis), np.std(estimated_ibis), estimated_ibis)
+        #print("Estimated IBIs:", np.mean(estimated_ibis), np.std(estimated_ibis), estimated_ibis)
 
-        ax.legend()
-        ax.set_xlabel("Time (ms)")
-        ax.set_ylabel("$\Delta c$ / $\mu M$")
+        if self.config.plot:
+            ax.legend()
+            ax.set_xlabel("Time (ms)")
+            ax.set_ylabel("$\Delta c$ / $\mu M$")
 
         features_list.sort()
-
-        plt.show()
+        if self.config.plot:
+            plt.show()
         res = PeakSignal(signals=proccessed, peaks=peak_indices)
         return res

@@ -1,6 +1,6 @@
 from HRVPipeline.src.config.common_config import CommonConfig
 
 
-class GraphConfig(CommonConfig):
+class BaselineConfig(CommonConfig):
     def __init__(self):
-        super(GraphConfig, self).__init__()
+        super(BaselineConfig, self).__init__()

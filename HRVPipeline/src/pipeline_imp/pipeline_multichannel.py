@@ -21,7 +21,7 @@ class MultiChannelPipelineStage(PipelineStage):
         sampling_rate = processed.sampling_rate
         times = processed.times  # TODO
 
-        print(filtered_data_list.shape)
+        #print(filtered_data_list.shape)
         filtered_data_list = filtered_data_list.transpose()
         features_list = []
         peaks_dict = {}
@@ -30,7 +30,7 @@ class MultiChannelPipelineStage(PipelineStage):
 
         for i, filtered_data in enumerate(filtered_data_list):
             # print('filtered_data', i, filtered_data)
-            print(filtered_data.shape)
+            #print(filtered_data.shape)
             peaks = get_snirf_ppg_peaks(filtered_data, sampling_rate)
 
             peak_indices = np.array(peaks.peaks.values)
@@ -55,9 +55,9 @@ class MultiChannelPipelineStage(PipelineStage):
             bins = np.histogram(peak_sums, bins=num_bin)
             bin_edges = bins[1]
             bin_counts = bins[0]
-            print('Bins:', bin_edges)
-            print('Bin counts:', bin_counts)
-            print('num_bin:', num_bin)
+            #print('Bins:', bin_edges)
+            #print('Bin counts:', bin_counts)
+            #print('num_bin:', num_bin)
 
             # features_list = np.asarray(features_list)
 
@@ -65,7 +65,7 @@ class MultiChannelPipelineStage(PipelineStage):
             peak_sums_reshaped: np.array = np.reshape(features_list, (-1, 1))
             # peak_sums_reshaped = features_list
             n_clusters = num_bin  # Adjust the number of clusters as needed
-            kmeans = KMeans(n_clusters=n_clusters, random_state=0).fit(peak_sums_reshaped)
+            kmeans = KMeans(n_init="auto", n_clusters=n_clusters, random_state=0).fit(peak_sums_reshaped)
             clusters = kmeans.labels_
             aggregated_peaks = []
             # Plot the clusters
@@ -79,7 +79,7 @@ class MultiChannelPipelineStage(PipelineStage):
             aggregated_peaks.sort()
             estimated_ibis = np.diff(aggregated_peaks)
 
-            print("Estimated IBIs:", np.mean(estimated_ibis), np.std(estimated_ibis), estimated_ibis)
+            #print("Estimated IBIs:", np.mean(estimated_ibis), np.std(estimated_ibis), estimated_ibis)
 
             shift = 0.01
         # res = IbisSignal(signals=processed, ibis=estimated_ibis)

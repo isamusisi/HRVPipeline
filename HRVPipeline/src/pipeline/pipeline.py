@@ -37,7 +37,7 @@ class Pipeline:
                 raise StageIncompatible("Stages are incompatible")  # TODO more specific Exception?
             self.stages.append(pipeline_stage)
         else:
-            print("Stages before", self.stages[-1].stage_type , "into",pipeline_stage.accepted_in)
+            # print("Stages before", self.stages[-1].stage_type , "into",pipeline_stage.accepted_in)
             if pipeline_stage.accept_as_input(self.stages[-1]):
                 # ok is compatible
                 self.stages.append(pipeline_stage)

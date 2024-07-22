@@ -14,7 +14,7 @@ class SnirfUpsamplingPipelineStage(PipelineStage):
 
     def run(self, pipeline_input: MultiChannelRawSignal) -> MultiChannelProcessedSignal:
         raw = pipeline_input
-        target_sr = 500
+        target_sr = self.config.target_sampling_rate
 
         amp2d_resampled = resample_xarray(raw.signals, target_sr)
 
@@ -36,10 +36,10 @@ class SnirfFilterPipelineStage(PipelineStage):
         amp2d_filtered = preprocess_snirf_data(processed.signals, processed.sampling_rate)
 
         times = processed.signals.time.values * 1000  # TODO not so nice
+        if self.config.plot:
+            plot_signal(np.transpose(amp2d_filtered.values))
 
-        plot_signal(np.transpose(amp2d_filtered.values))
-
-        print('filtered xarray', amp2d_filtered)
+        #print('filtered xarray', amp2d_filtered)
 
         res = MultiChannelProcessedSignal(signals=amp2d_filtered.values,
                                           sampling_rate=processed.sampling_rate,

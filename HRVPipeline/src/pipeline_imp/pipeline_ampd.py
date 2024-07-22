@@ -7,10 +7,11 @@ from HRVPipeline.src.pipeline.pipeline_stage import PipelineStage, PipelineStage
 import numpy as np
 from threading import Thread
 
+
 class OneChannelRunner(Thread):
-    def __init__(self,i,channel_data,times):
+    def __init__(self, i, channel_data, times):
         Thread.__init__(self)
-        self.i =i
+        self.i = i
         self.channel_data = channel_data
         self.times = times
         self.estimated_ibis = None
@@ -27,7 +28,7 @@ class OneChannelRunner(Thread):
 
         self.estimated_ibis = np.diff(peak_times)
 
-        print(f"Estimated IBIs {self.i}:", np.mean(self.estimated_ibis), np.std(self.estimated_ibis))  # , estimated_ibis)
+        # print(f"Estimated IBIs {self.i}:", np.mean(self.estimated_ibis), np.std(self.estimated_ibis))  # , estimated_ibis)
 
 
 class AmpdPipelineStage(PipelineStage):
@@ -36,7 +37,6 @@ class AmpdPipelineStage(PipelineStage):
         self.accepted_in = [PipelineStageType.INPUT, PipelineStageType.PRE_PROCESSING]
         self.stage_type = PipelineStageType.PRE_PROCESSING
 
-
     def run(self, pipeline_input: MultiChannelProcessedSignal) -> MultiChannelProcessedSignal:
         processed = pipeline_input
 
@@ -44,26 +44,24 @@ class AmpdPipelineStage(PipelineStage):
         sampling_rate = processed.sampling_rate
         times = processed.times  # TODO
 
-        print(filtered_data_list.shape)
+        # print(filtered_data_list.shape)
         filtered_data_list = filtered_data_list.transpose()
         runs = []
 
         for i, channel_data in enumerate(filtered_data_list):
-            print("starting ",i)
+            # print("starting ",i)
             # print(f'############## channel_data shape {np.shape(channel_data)}')
             # channel_data = filtered_data_list[0]
-            run = OneChannelRunner(i,channel_data[:],times[:])
+            run = OneChannelRunner(i, channel_data[:], times[:])
             run.start()
+            run.join()  # run still consecutively
             runs.append(run)
 
-
-        for run in runs:
-            print("finished ",run.i)
-            run.join()
-        peak_indices = runs[0].peak_indicies # TODO select proper
+        # run all in parallel
+        # for run in runs:
+        #    print("finished ",run.i)
+        #    run.join()
+        peak_indices = runs[0].peak_indicies  # TODO select proper
         # res = IbisSignal(signals=processed, ibis=estimated_ibis)
         res = PeakSignal(signals=processed, peaks=peak_indices)
         return res
-
-
-

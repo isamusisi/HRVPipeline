@@ -18,8 +18,8 @@ class HRVPipelineStage(PipelineStage):
         processed = pipeline_input
         res = nk.hrv(peaks=processed.peaks,
                sampling_rate=processed.multi_channel_signals.sampling_rate,
-               show=True)
-        print("HRV",res)
+               show=self.config.plot)
+        #print("HRV",res)
         return res
 
 

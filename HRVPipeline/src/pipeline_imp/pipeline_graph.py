@@ -21,8 +21,8 @@ class GraphPipelineStage(PipelineStage):
         sampling_rate = processed.sampling_rate
         times = processed.times  # TODO
 
-        print('0 ++++++++++++++++++++++++++++++++++++++++++ GraphPipelineStage :', sampling_rate, np.shape(filtered_data_list), filtered_data_list[0])
-        print('1 ++++++++++++++++++++++++++++++++++++++++++ GraphPipelineStage :', np.shape(times), times[-1])
+        #print('0 ++++++++++++++++++++++++++++++++++++++++++ GraphPipelineStage :', sampling_rate, np.shape(filtered_data_list), filtered_data_list[0])
+        #print('1 ++++++++++++++++++++++++++++++++++++++++++ GraphPipelineStage :', np.shape(times), times[-1])
         features_list, peaks_dict = calc_features_list(filtered_data_list, sampling_rate, times)
 
         avg_hrs = calculate_average_hr(features_list, peaks_dict)
@@ -47,8 +47,8 @@ class GraphPipelineStage(PipelineStage):
             if i > 0:
                 estimated_ibis.append(time - shortest_path_times[i - 1])
 
-        print("Estimated IBIs 1:", np.mean(estimated_ibis), np.std(estimated_ibis), estimated_ibis)
-        print("Estimated IBIs 2:", np.mean(ibis), np.std(ibis), ibis)
+        #print("Estimated IBIs 1:", np.mean(estimated_ibis), np.std(estimated_ibis), estimated_ibis)
+        #print("Estimated IBIs 2:", np.mean(ibis), np.std(ibis), ibis)
 
         peaks_graph = None
         # res = IbisSignal(signals=processed, ibis=estimated_ibis)
