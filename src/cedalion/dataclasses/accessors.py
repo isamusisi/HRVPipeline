@@ -69,7 +69,7 @@ class CedalionAccessor:
         """Apply a Butterworth frequency filter."""
         array = self._obj
 
-        fny = array.cd.sampling_rate / 2
+        fny = array.cd.current_sampling_rate / 2
         b, a = scipy.signal.butter(butter_order, (fmin / fny, fmax / fny), "bandpass")
 
         if (units := array.pint.units) is not None:

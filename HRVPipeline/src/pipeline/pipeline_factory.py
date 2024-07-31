@@ -4,6 +4,7 @@ from HRVPipeline.src.neurokit_imp.pipelinestage_neurokit_output import NeurokitP
 from HRVPipeline.src.neurokit_imp.pipelinestage_neurokit_preprocessing import NeurokitPipelineStagePreprocessing
 from HRVPipeline.src.pipeline.pipeline import Pipeline
 from HRVPipeline.src.pipeline_imp.pipeline_ampd import AmpdPipelineStage
+from HRVPipeline.src.pipeline_imp.pipeline_augmentation import AugmentationPipelineStage
 from HRVPipeline.src.pipeline_imp.pipeline_ecg import EcgBasePipelineStage
 from HRVPipeline.src.pipeline_imp.pipeline_graph import GraphPipelineStage
 from HRVPipeline.src.pipeline_imp.pipeline_hrv import HRVPipelineStage
@@ -11,7 +12,7 @@ from HRVPipeline.src.pipeline_imp.pipeline_multichannel import MultiChannelPipel
 
 from HRVPipeline.src.pipeline_imp.pipeline_snirf_input import *
 from HRVPipeline.src.pipeline_imp.pipeline_snirf_preprocessing import SnirfUpsamplingPipelineStage, \
-    SnirfFilterPipelineStage
+    SnirfFilterPipelineStage, SnirfPruningPipelineStage
 
 
 class PipelineFactory:
@@ -40,14 +41,16 @@ class PipelineFactory:
     @staticmethod
     def create_snirf_input_pipeline(config):
         pipeline_input = SnirfInputPipelineStage(config)
+        pipeline_augmentation = AugmentationPipelineStage(config)
+        pipeline_pruning = SnirfPruningPipelineStage(config)
         pipeline_upsampling = SnirfUpsamplingPipelineStage(config)
         pipeline_filtering = SnirfFilterPipelineStage(config)
-        #pipeline_imp = SnirfInputPipelineStage(config)
+        # pipeline_imp = SnirfInputPipelineStage(config)
 
-        return [pipeline_input,pipeline_upsampling,pipeline_filtering]
+        return [pipeline_input, pipeline_augmentation,pipeline_pruning, pipeline_upsampling, pipeline_filtering]
 
     @staticmethod
-    def create_pipeline_from_stages(stages,config={}):
+    def create_pipeline_from_stages(stages, config={}):
         pipeline = Pipeline(config)
         for stage in stages:
             pipeline.add_stage(stage)
@@ -55,14 +58,12 @@ class PipelineFactory:
 
     @staticmethod
     def create_graph_pipeline(config):
-
         stages = []
         stages.extend(PipelineFactory.create_snirf_input_pipeline(config))
         stages.extend([GraphPipelineStage(config)])
         stages.extend([HRVPipelineStage(config)])
 
         return PipelineFactory.create_pipeline_from_stages(stages)
-
 
     @staticmethod
     def create_ampd_pipeline(config):

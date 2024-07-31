@@ -54,7 +54,7 @@ if __name__ == "__main__":
     f, ax = p.subplots(1, 1, figsize=(24, 8))
     # fig, axs = p.subplots(num_rows, num_cols, figsize=(24, 8 * num_rows), sharex='all')
     amp2d = amp.stack(flat_channel=["channel", "wavelength"])
-    sr = amp2d.cd.sampling_rate
+    sr = amp2d.cd.current_sampling_rate
     mean_ibis = []
     peak_candidates = []
     peak_times_all = []

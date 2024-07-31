@@ -52,5 +52,5 @@ class GraphPipelineStage(PipelineStage):
 
         peaks_graph = None
         # res = IbisSignal(signals=processed, ibis=estimated_ibis)
-        res = PeakSignal(signals=processed, peaks=peak_indices)
+        res = PeakSignal(signals=processed, peaks=peak_indices, ibis=estimated_ibis, name='Graph')
         return res

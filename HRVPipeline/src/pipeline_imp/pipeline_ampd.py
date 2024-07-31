@@ -62,6 +62,7 @@ class AmpdPipelineStage(PipelineStage):
         #    print("finished ",run.i)
         #    run.join()
         peak_indices = runs[0].peak_indicies  # TODO select proper
+        estimated_ibis = runs[0].estimated_ibis
         # res = IbisSignal(signals=processed, ibis=estimated_ibis)
-        res = PeakSignal(signals=processed, peaks=peak_indices)
+        res = PeakSignal(signals=processed, peaks=peak_indices, ibis=estimated_ibis, name='AMPD')
         return res

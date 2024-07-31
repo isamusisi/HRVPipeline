@@ -368,15 +368,16 @@ def read_aux(nirs_element: NirsElement):
             name=name,
             attrs={"units": units,"time_offset": time_offset},  #"units": units,
         )
-        print(f"{x.name} has shape {x.shape}")
+        # print(f"{x.name} has shape {x.shape}")
         try:
             q = x.pint.quantify()
-            print(f"--------{q.values}")
+            # print(f"--------{q.values}")
             # print(f"--------{[ureg.Quantity(i, units) for i in x.values]}")
             result[name] = q
         except Exception as e:
-            print(f"{x.name} got an error: {e}")
-        print(f"-"*70)
+            # print(f"{x.name} got an error: {e}")
+            pass
+        # print(f"-"*70)
     return result
 
 

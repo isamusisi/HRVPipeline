@@ -16,8 +16,8 @@ import neurokit2 as nk
 def load_snirf_data(path):
     elements = cedalion.io.read_snirf(path)
     amp3d = elements[0].aux['ExGa1']
-    amp3d = amp3d.sel(time=amp3d.time < 20)
-    return amp3d, amp3d.cd.sampling_rate
+    amp3d = amp3d.sel(time=amp3d.time < 60 * 5)
+    return amp3d, amp3d.cd.current_sampling_rate
 
 
 # Normalize signal

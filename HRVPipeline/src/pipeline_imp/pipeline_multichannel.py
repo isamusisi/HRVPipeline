@@ -21,7 +21,7 @@ class MultiChannelPipelineStage(PipelineStage):
         sampling_rate = processed.sampling_rate
         times = processed.times  # TODO
 
-        #print(filtered_data_list.shape)
+        # print(filtered_data_list.shape)
         filtered_data_list = filtered_data_list.transpose()
         features_list = []
         peaks_dict = {}
@@ -30,7 +30,7 @@ class MultiChannelPipelineStage(PipelineStage):
 
         for i, filtered_data in enumerate(filtered_data_list):
             # print('filtered_data', i, filtered_data)
-            #print(filtered_data.shape)
+            # print(filtered_data.shape)
             peaks = get_snirf_ppg_peaks(filtered_data, sampling_rate)
 
             peak_indices = np.array(peaks.peaks.values)
@@ -45,43 +45,43 @@ class MultiChannelPipelineStage(PipelineStage):
 
             features_list.extend(peak_times_raw)
 
-            peak_sums = np.stack(peaks_indices_all).sum(axis=0)
-            # ax.plot(times, peak_sums)
+        peak_sums = np.stack(peaks_indices_all).sum(axis=0)
+        # ax.plot(times, peak_sums)
 
-            num_bin = np.stack(peaks_indices_all).sum(axis=1).max()
+        num_bin = np.stack(peaks_indices_all).sum(axis=1).max()
 
-            # num_bin = np.max(num_bin)
+        # num_bin = np.max(num_bin)
 
-            bins = np.histogram(peak_sums, bins=num_bin)
-            bin_edges = bins[1]
-            bin_counts = bins[0]
-            #print('Bins:', bin_edges)
-            #print('Bin counts:', bin_counts)
-            #print('num_bin:', num_bin)
+        bins = np.histogram(peak_sums, bins=num_bin)
+        bin_edges = bins[1]
+        bin_counts = bins[0]
+        # print('Bins:', bin_edges)
+        # print('Bin counts:', bin_counts)
+        # print('num_bin:', num_bin)
 
-            # features_list = np.asarray(features_list)
+        # features_list = np.asarray(features_list)
 
-            # print('features_list:', features_list.min(), features_list.max(), features_list.shape)
-            peak_sums_reshaped: np.array = np.reshape(features_list, (-1, 1))
-            # peak_sums_reshaped = features_list
-            n_clusters = num_bin  # Adjust the number of clusters as needed
-            kmeans = KMeans(n_init="auto", n_clusters=n_clusters, random_state=0).fit(peak_sums_reshaped)
-            clusters = kmeans.labels_
-            aggregated_peaks = []
-            # Plot the clusters
-            for cluster in range(n_clusters):
-                cluster_indices = np.where(clusters == cluster)[0]
-                agg_mean = peak_sums_reshaped[cluster_indices].mean()
-                aggregated_peaks.append(agg_mean)
-                # ax.axvline(x=agg_mean, color='black', linestyle='--', linewidth=1)
-                # ax.scatter(peak_sums_reshaped[cluster_indices], times[cluster_indices], label=f'Cluster {cluster}', s=50)
+        # print('features_list:', features_list.min(), features_list.max(), features_list.shape)
+        peak_sums_reshaped: np.array = np.reshape(features_list, (-1, 1))
+        # peak_sums_reshaped = features_list
+        n_clusters = num_bin  # Adjust the number of clusters as needed
+        kmeans = KMeans(n_init="auto", n_clusters=n_clusters, random_state=0).fit(peak_sums_reshaped)
+        clusters = kmeans.labels_
+        aggregated_peaks = []
+        # Plot the clusters
+        for cluster in range(n_clusters):
+            cluster_indices = np.where(clusters == cluster)[0]
+            agg_mean = np.median(peak_sums_reshaped[cluster_indices])
+            aggregated_peaks.append(agg_mean)
+            # ax.axvline(x=agg_mean, color='black', linestyle='--', linewidth=1)
+            # ax.scatter(peak_sums_reshaped[cluster_indices], times[cluster_indices], label=f'Cluster {cluster}', s=50)
 
-            aggregated_peaks.sort()
-            estimated_ibis = np.diff(aggregated_peaks)
+        aggregated_peaks.sort()
+        estimated_ibis = [x for x in np.diff(aggregated_peaks) if x > 0]
+        peak_indices_all = np.isin(times, aggregated_peaks).astype(int)
+        # print("Estimated IBIs:", np.mean(estimated_ibis), np.std(estimated_ibis), estimated_ibis)
 
-            #print("Estimated IBIs:", np.mean(estimated_ibis), np.std(estimated_ibis), estimated_ibis)
-
-            shift = 0.01
+        shift = 0.01
         # res = IbisSignal(signals=processed, ibis=estimated_ibis)
-        res = PeakSignal(signals=processed, peaks=peak_indices)
+        res = PeakSignal(signals=processed, peaks=peak_indices_all, ibis=estimated_ibis, name='Multichannel')
         return res

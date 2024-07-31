@@ -20,7 +20,7 @@ class NeurokitPipelineStagePreprocessing(PipelineStage):
     def run(self, pipeline_input):
         # TODO interfaces between stages!!!!!!!!!!!
 
-        sr = int(pipeline_input.cd.sampling_rate)
+        sr = int(pipeline_input.cd.current_sampling_rate)
         window = self.config["window"]
 
         window_samples = window * sr

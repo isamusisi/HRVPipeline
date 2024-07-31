@@ -7,8 +7,7 @@ class SnirfInputPipelineStage(PipelineStage):
     def __init__(self, config):
         super(SnirfInputPipelineStage, self).__init__(config)
 
-
-    def run(self, pipeline_input)->MultiChannelRawSignal:
+    def run(self, pipeline_input) -> MultiChannelRawSignal:
         path = pipeline_input
         amp2d, sampling_rate = load_snirf_data(path)
         res = MultiChannelRawSignal(signals=amp2d,

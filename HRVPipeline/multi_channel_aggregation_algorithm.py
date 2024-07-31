@@ -71,9 +71,9 @@ def greedy_fusion(features_list, avg_ibis):
 def load_snirf_data(path):
     elements = cedalion.io.read_snirf(path)
     amp3d = elements[0].data[0]
-    amp3d = amp3d.sel(time=amp3d.time < 20)
+    amp3d = amp3d.sel(time=amp3d.time < 60 * 5)
     amp2d = amp3d.stack(flat_channel=["channel", "wavelength"])
-    return amp2d, amp2d.cd.sampling_rate
+    return amp2d, amp2d.cd.current_sampling_rate
 
 
 # Preprocess SNIRF data by filtering
@@ -175,13 +175,13 @@ def main():
         peaks_indices_all.append(peak_indices)
 
         features_list.extend(peak_times_raw)
-        line_color = line.get_color()
+        # line_color = line.get_color()
 
         shift = 0.01
 
-        for peak in peak_times:
-            if peak[0] > 0:
-                ax.scatter(x=peak[0], y=i * shift, color=line_color, edgecolor='black', s=100, zorder=5)
+        # for peak in peak_times:
+        #     if peak[0] > 0:
+        #         ax.scatter(x=peak[0], y=i * shift, color=line_color, edgecolor='black', s=100, zorder=5)
 
     peak_sums = np.stack(peaks_indices_all).sum(axis=0)
     # ax.plot(times, peak_sums)
@@ -212,12 +212,14 @@ def main():
         agg_mean = peak_sums_reshaped[cluster_indices].mean()
         aggregated_peaks.append(agg_mean)
         ax.axvline(x=agg_mean, color='black', linestyle='--', linewidth=1)
-        # ax.scatter(peak_sums_reshaped[cluster_indices], times[cluster_indices], label=f'Cluster {cluster}', s=50)
+        c_peaks = peak_sums_reshaped[cluster_indices]
+        # ax.scatter(c_peaks, range(len(c_peaks)), label=f'Cluster {cluster}', s=50)
+        # ax.scatter(times[cluster_indices], peak_sums_reshaped[cluster_indices], label=f'Cluster {cluster}', s=50)
 
     aggregated_peaks.sort()
     estimated_ibis = np.diff(aggregated_peaks)
 
-    print("Estimated IBIs:", np.mean(estimated_ibis), np.std(estimated_ibis), estimated_ibis)
+    print("Estimated IBIs:", np.mean(estimated_ibis), np.std(estimated_ibis), np.max(estimated_ibis), np.min(estimated_ibis), estimated_ibis)
 
     ax.legend()
     ax.set_xlabel("Time (ms)")

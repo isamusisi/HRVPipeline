@@ -14,7 +14,7 @@ import xarray as xr
 def load_snirf_data(path):
     elements = cedalion.io.read_snirf(path)
     amp3d = elements[0].aux['ExGa1']
-    amp3d = amp3d.sel(time=amp3d.time < 60*5)
+    amp3d = amp3d.sel(time=amp3d.time < 60*1)
     return amp3d, amp3d.cd.sampling_rate
 
 
@@ -113,5 +113,5 @@ class EcgBasePipelineStage(PipelineStage):
         features_list.sort()
         if self.config.plot:
             plt.show()
-        res = PeakSignal(signals=proccessed, peaks=peak_indices)
+        res = PeakSignal(signals=proccessed, peaks=peak_indices, ibis=estimated_ibis, name='ECG')
         return res

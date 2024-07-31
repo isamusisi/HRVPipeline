@@ -151,7 +151,7 @@ def load_snirf_data(path):
     amp3d = elements[0].data[0]
     amp3d = amp3d.sel(time=amp3d.time[40:360])
     amp2d = amp3d.stack(flat_channel=["channel", "wavelength"])
-    return amp2d, amp2d.cd.sampling_rate
+    return amp2d, amp2d.cd.current_sampling_rate
 
 
 # Preprocess SNIRF data
@@ -222,7 +222,7 @@ def normalize(sig):
 
 # Resample function
 def resample_xarray(xarray, new_fs):
-    current_fs = xarray.cd.sampling_rate
+    current_fs = xarray.cd.current_sampling_rate
     duration = xarray.time.values[-1] - xarray.time.values[0]
     new_length = int(duration * new_fs)
 

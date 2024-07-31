@@ -38,7 +38,7 @@ def load_snirf_data(path):
     amp3d = elements[0].data[0]
     amp3d = amp3d.sel(time=amp3d.time < 20)
     amp2d = amp3d.stack(flat_channel=["channel", "wavelength"])
-    return amp2d, amp2d.cd.sampling_rate
+    return amp2d, amp2d.cd.current_sampling_rate
 
 def filter_signal(data, sr):
     # return hp.filter_signal(data, [0.5, 3], sample_rate=sr, order=2, filtertype='bandpass')

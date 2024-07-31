@@ -69,9 +69,9 @@ def greedy_fusion(features_list, avg_ibis):
 def load_snirf_data(path):
     elements = cedalion.io.read_snirf(path)
     amp3d = elements[0].data[0]
-    amp3d = amp3d.sel(time=amp3d.time < 20)
+    amp3d = amp3d.sel(time=amp3d.time < 60 * 5)
     amp2d = amp3d.stack(flat_channel=["channel", "wavelength"])
-    return amp2d, amp2d.cd.sampling_rate
+    return amp2d, amp2d.cd.current_sampling_rate
 
 
 # Preprocess SNIRF data by filtering
@@ -197,9 +197,9 @@ def main():
 
 
 
-        for peak in peak_times:
-            if peak[0] > 0:
-                ax.scatter(x=peak[0], y=y_value, color=line_color, edgecolor='black', s=100, zorder=5)
+        # for peak in peak_times:
+        #     if peak[0] > 0:
+        #         ax.scatter(x=peak[0], y=y_value, color=line_color, edgecolor='black', s=100, zorder=5)
 
     ax.legend(loc='right', bbox_to_anchor=(1.1, 0.5), ncol=1, fancybox=True)
     plt.title('40 channels peaks and estimated real peaks (dotted line)', fontdict={'fontsize': 16})

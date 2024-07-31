@@ -85,7 +85,7 @@ def main():
     amp3d = amp3d.sel(time=amp3d.time[40:160])
     # stack channel and wavelength dims into a new dimension called flat_channel
     amp2d = amp3d.stack(flat_channel=["channel", "wavelength"])
-    sr = amp2d.cd.sampling_rate
+    sr = amp2d.cd.current_sampling_rate
     mean_ibis = []
     peak_candidates = []
     for fc in amp2d.flat_channel.values:
