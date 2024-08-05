@@ -9,7 +9,8 @@ class SnirfInputPipelineStage(PipelineStage):
 
     def run(self, pipeline_input) -> MultiChannelRawSignal:
         path = pipeline_input
-        amp2d, sampling_rate = load_snirf_data(path)
+        length= self.config.sample_length
+        amp2d, sampling_rate = load_snirf_data(path,length)
         res = MultiChannelRawSignal(signals=amp2d,
                                     sampling_rate=sampling_rate,
                                     channels=len(amp2d.flat_channel))

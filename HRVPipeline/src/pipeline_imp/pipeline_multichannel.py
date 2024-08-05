@@ -6,6 +6,63 @@ from HRVPipeline.src.hrv_methods import get_snirf_ppg_peaks
 from HRVPipeline.src.pipeline.pipeline_stage import PipelineStage, PipelineStageType
 import numpy as np
 from sklearn.cluster import KMeans
+from scipy import stats
+
+# class MultiChannelPipelineStage(PipelineStage):
+#     def __init__(self, config):
+#         super(MultiChannelPipelineStage, self).__init__(config)
+#         self.accepted_in = [PipelineStageType.INPUT, PipelineStageType.PRE_PROCESSING]
+#         self.stage_type = PipelineStageType.PRE_PROCESSING
+#
+#     def run(self, pipeline_input: MultiChannelProcessedSignal) -> MultiChannelProcessedSignal:
+#         processed = pipeline_input
+#
+#         filtered_data_list = processed.signals
+#         sampling_rate = processed.sampling_rate
+#         times = processed.times  # TODO
+#
+#         # print(filtered_data_list.shape)
+#         filtered_data_list = filtered_data_list.transpose()
+#         features_list = []
+#         peaks_dict = {}
+#         peaks_indices_all = []
+#         peaks_indices_dict = {}
+#
+#         for i, filtered_data in enumerate(filtered_data_list):
+#             # print('filtered_data', i, filtered_data)
+#             # print(filtered_data.shape)
+#             peaks = get_snirf_ppg_peaks(filtered_data, sampling_rate)
+#
+#             peak_indices = np.array(peaks.peaks.values)
+#             peak_times = times * peak_indices
+#             # print(f'############## peak_times shape {peak_times.shape}')
+#             peak_times_raw = [pt for pt in peak_times if pt > 0]
+#             peak_times = [(pt, i) for pt in peak_times if pt > 0]
+#             # print('Extracted peaks:', peak_times)
+#             peaks_dict[i] = peak_times_raw
+#             peaks_indices_dict[i] = peak_indices
+#             peaks_indices_all.append(peak_indices)
+#
+#             features_list.extend(peak_times_raw)
+#
+#         peak_sums = np.stack(peaks_indices_all).sum(axis=0)
+#         # ax.plot(times, peak_sums)
+#
+#         most_common_length =np.median( np.array([p.sum() for p in peaks_indices_all]))
+#         print('Most common:',most_common_length)
+#         aggregated_peaks = [p.sum() for p in peaks_indices_all ]
+#         print('Aggregated peaks:',aggregated_peaks)
+#         print(np.sum(aggregated_peaks))
+#         aggregated_peaks = np.array(peaks_indices_all)[aggregated_peaks]
+#         aggregated_peaks.sort()
+#         estimated_ibis = [x for x in np.diff(aggregated_peaks) if x > 0]
+#         peak_indices_all = np.isin(times, aggregated_peaks).astype(int)
+#         # print("Estimated IBIs:", np.mean(estimated_ibis), np.std(estimated_ibis), estimated_ibis)
+#
+#         shift = 0.01
+#         # res = IbisSignal(signals=processed, ibis=estimated_ibis)
+#         res = PeakSignal(signals=processed, peaks=peak_indices_all, ibis=estimated_ibis, name='Multichannel')
+#         return res
 
 
 class MultiChannelPipelineStage(PipelineStage):
@@ -71,7 +128,7 @@ class MultiChannelPipelineStage(PipelineStage):
         # Plot the clusters
         for cluster in range(n_clusters):
             cluster_indices = np.where(clusters == cluster)[0]
-            agg_mean = np.median(peak_sums_reshaped[cluster_indices])
+            agg_mean = stats.mode(peak_sums_reshaped[cluster_indices])
             aggregated_peaks.append(agg_mean)
             # ax.axvline(x=agg_mean, color='black', linestyle='--', linewidth=1)
             # ax.scatter(peak_sums_reshaped[cluster_indices], times[cluster_indices], label=f'Cluster {cluster}', s=50)

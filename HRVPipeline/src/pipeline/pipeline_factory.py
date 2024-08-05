@@ -9,6 +9,7 @@ from HRVPipeline.src.pipeline_imp.pipeline_ecg import EcgBasePipelineStage
 from HRVPipeline.src.pipeline_imp.pipeline_graph import GraphPipelineStage
 from HRVPipeline.src.pipeline_imp.pipeline_hrv import HRVPipelineStage
 from HRVPipeline.src.pipeline_imp.pipeline_multichannel import MultiChannelPipelineStage
+from HRVPipeline.src.pipeline_imp.pipeline_plot import XarrayPlottingPipelineStage, NumpyArrayPlottingPipelineStage
 
 from HRVPipeline.src.pipeline_imp.pipeline_snirf_input import *
 from HRVPipeline.src.pipeline_imp.pipeline_snirf_preprocessing import SnirfUpsamplingPipelineStage, \
@@ -40,14 +41,28 @@ class PipelineFactory:
 
     @staticmethod
     def create_snirf_input_pipeline(config):
+
+        plot_xarray = XarrayPlottingPipelineStage(config)
+        plot_numpy = NumpyArrayPlottingPipelineStage(config)
+
+
         pipeline_input = SnirfInputPipelineStage(config)
+
         pipeline_augmentation = AugmentationPipelineStage(config)
         pipeline_pruning = SnirfPruningPipelineStage(config)
         pipeline_upsampling = SnirfUpsamplingPipelineStage(config)
         pipeline_filtering = SnirfFilterPipelineStage(config)
         # pipeline_imp = SnirfInputPipelineStage(config)
 
-        return [pipeline_input, pipeline_augmentation,pipeline_pruning, pipeline_upsampling, pipeline_filtering]
+        return [pipeline_input,
+                #plot_xarray,
+                pipeline_augmentation,
+                #plot_xarray,
+                pipeline_pruning,
+                pipeline_upsampling,
+                pipeline_filtering,
+                #plot_numpy
+                ]
 
     @staticmethod
     def create_pipeline_from_stages(stages, config={}):

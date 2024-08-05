@@ -11,10 +11,10 @@ import neurokit2 as nk
 import matplotlib.pyplot as plt
 import scipy.signal as signal
 import xarray as xr
-def load_snirf_data(path):
+def load_snirf_data(path,length):
     elements = cedalion.io.read_snirf(path)
     amp3d = elements[0].aux['ExGa1']
-    amp3d = amp3d.sel(time=amp3d.time < 60*1)
+    amp3d = amp3d.sel(time=amp3d.time < length)
     return amp3d, amp3d.cd.sampling_rate
 
 
@@ -46,7 +46,8 @@ class EcgBasePipelineStage(PipelineStage):
 
     def run(self, pipeline_input):
         path = pipeline_input
-        ecg, sampling_rate = load_snirf_data(path)
+        length = self.config.sample_length
+        ecg, sampling_rate = load_snirf_data(path,length)
 
 
         # target_sr = 25

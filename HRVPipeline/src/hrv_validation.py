@@ -113,6 +113,7 @@
 #     print(results.head())
 #     print(results.shape)
 
+import seaborn as sns
 import matplotlib
 from matplotlib import pyplot as plt
 import neurokit2 as nk
@@ -122,10 +123,9 @@ from scipy.spatial.distance import euclidean
 from scipy.stats import pearsonr, spearmanr
 from sklearn.metrics.pairwise import cosine_similarity
 
-from HRVPipeline.src.config.ampd_config import AmpdConfig
 from HRVPipeline.src.config.baseline_config import BaselineConfig
-from HRVPipeline.src.config.graph_config import GraphConfig
-from HRVPipeline.src.config.multichannel_config import MultichannelConfig
+
+from HRVPipeline.src.config.common_config import CommonConfig
 from HRVPipeline.src.pipeline.pipeline_comperator import PipelineComperator
 from pipeline.pipeline_factory import PipelineFactory
 from config.evaluation_config import EvaluationConfig
@@ -133,7 +133,8 @@ from config.evaluation_config import EvaluationConfig
 
 def clean_data(df):
     df.replace([np.inf, -np.inf], np.nan, inplace=True)
-    df.dropna(axis=1, inplace=True)
+    df.replace([np.nan], 0, inplace=True)
+    # df.dropna(axis=1, inplace=True)
     return df
 
 
@@ -169,23 +170,21 @@ if __name__ == "__main__":
     }
     # Add HRV parameters to the new row
     for key, value in res[0].items():
-        new_row[key] = value.values if isinstance(value, pd.Series) else value
+        new_row[key] = value.values[0] if isinstance(value, pd.Series) else value
 
     results = append_row(results, pd.Series(new_row))
-    #print(results)
-    #print(results.shape)
-    #exit(0)
+    # print(results)
+    # print(results.shape)
+    # exit(0)
 
     for eval_config in evaluation_config:
         print(eval_config)
 
-        graph_config = GraphConfig(eval_config.current_sampling_rate)
-        ampd_config = AmpdConfig(eval_config.current_sampling_rate)
-        multichannel_config = MultichannelConfig(eval_config.current_sampling_rate)
+        common_config = CommonConfig(eval_config)
 
-        pipeline_ampd = PipelineFactory.create_ampd_pipeline(ampd_config)
-        pipeline_graph = PipelineFactory.create_graph_pipeline(graph_config)
-        pipeline_multi = PipelineFactory.create_multichannel_aggregation_pipeline(multichannel_config)
+        pipeline_ampd = PipelineFactory.create_ampd_pipeline(common_config)
+        pipeline_graph = PipelineFactory.create_graph_pipeline(common_config)
+        pipeline_multi = PipelineFactory.create_multichannel_aggregation_pipeline(common_config)
 
         comparator = PipelineComperator(pipeline_base, [pipeline_graph, pipeline_multi], compare_pipelines)
         difs = comparator.compare([evaluation_config.dataset_path])
@@ -200,14 +199,33 @@ if __name__ == "__main__":
                 "DIF": dif[0][0]
             }
             # Add HRV parameters to the new row
+
             for key, value in dif[0][1].items():
-                new_row[key] = value.values if isinstance(value, pd.Series) else value
+                if key == "HRV_SD1":
+                    print(value)
+                new_row[key] = value.values[0] if isinstance(value, pd.Series) else value
 
             results = append_row(results, pd.Series(new_row))
 
     print("Start evaluation")
 
     plt.show()
+
     print(results.head())
     print(results.shape)
     print(results.columns)
+
+    plt.figure(figsize=(10, 6))
+
+    X_AXIS = "SR" #"HRV_SD1"
+    Y_AXIS = "HRV_SDNN" # "HRV_SD2"
+    custom_palette = sns.color_palette(["#FF5733", "#33FF57", "#3357FF"])
+    sns.set_palette(custom_palette)
+    #results =  results[results['PIPELINE'] =='GRAPH' ]
+    sns.scatterplot(data=results, x=X_AXIS, y=Y_AXIS, hue='PIPELINE')#, palette='viridis'
+
+    # Add labels and title
+    plt.xlabel(X_AXIS)
+    plt.ylabel(Y_AXIS)
+    plt.show()
+

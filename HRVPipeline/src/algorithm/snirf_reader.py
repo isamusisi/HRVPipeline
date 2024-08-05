@@ -13,7 +13,7 @@ import numpy as np
 from cedalion import Quantity, units
 
 
-def load_snirf_data(path):
+def load_snirf_data(path,length):
     elements = cedalion.io.read_snirf(path)
     amp3d = elements[0].data[0]  # extract snirf
     # elements[0].aux['ExGa1'] ECG
@@ -37,7 +37,7 @@ def load_snirf_data(path):
 
     # print('++++++++++++++++++++++++++++++++++++++++drop list: ', drop_list)
 
-    amp3d = amp3d.sel(time=amp3d.time < 60 * 1)
+    amp3d = amp3d.sel(time=amp3d.time < length)
     amp2d = amp3d.stack(flat_channel=["channel", "wavelength"])
     return amp2d, amp2d.cd.sampling_rate
 
